@@ -49,3 +49,6 @@ span.moderate {
 padding: 3px;
 background-color: yellow;
 }
+.card-body {
+    flex:auto;
+}

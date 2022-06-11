@@ -8,6 +8,7 @@ var uvValue = document.querySelector(".uv")
 var cityStored = document.querySelector("#savedCity")
 var fiveDayForecast = document.querySelector("#fiveday-forcast");
 var fiveDayTitle = document.querySelector(".five")
+var fiveContainer = document.querySelector("#fiveday-container")
 
 buttonEl.addEventListener("click", function () {
     localStorage.setItem("city", inputValue.value);
@@ -40,7 +41,7 @@ var weatherGet = function () {
         })
 }
 var uvIndex = function (lat, lon) {
-    fetch("https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=154a57fedfa17fef2e0e01f2b48a62b1&units=metric")
+    fetch("https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=154a57fedfa17fef2e0e01f2b48a62b1&units=imperial")
         .then(response => response.json())
         .then(function (data) {
             displayUv(data);
@@ -67,16 +68,42 @@ var displayUv = function (index) {
     }
     uvValue.appendChild(uv);
 }
-var fiveDay = function(weather) {
+var fiveDay = function (weather) {
     console.log(weather)
+
+
     fiveDayTitle.innerHTML = "Five Day Forecast"
-    var forecast = weather.daily; 
-    for (var i =5; i<forecast.length; i=i+8 ){
-        var daily= forecast[i];
+    var forecast = weather.daily;
+    for (var i = 1; i < forecast.length; i++ , forecast.length = 6) {
+        var daily = forecast[i];
 
         var forecastEl = document.createElement('div');
         forecastEl.classList = "card bg-primary text-light m-2";
         console.log(daily);
+        // create date 
+        var forDate = document.createElement("h5")
+        forDate.textContent = moment.unix(daily.dt).format("MMM D,YYYY");
+        forDate.classList = "card-header text-center"
+        // append to card
+        forecastEl.appendChild(forDate);
+
+        // set weather image of 5 day forecast 
+
+        var weatherImg = document.createElement("img")
+        weatherImg.classList = "card-body text-center";
+        weatherImg.setAttribute("src", "https://openweathermap.org/img/wn/" + daily.weather[0].icon + "@2x.png");
+        // append to card
+        forecastEl.appendChild(weatherImg);
+        // temp for 5 day
+        var forTemp = document.createElement("p")
+        forTemp.classList = "card-body text-center";
+        forTemp.textContent = daily.temp.day + " °F";
+        forecastEl.appendChild(forTemp)
+        
+    
+// append to fiveday container 
+        fiveContainer.appendChild(forecastEl)
+       
     }
 }
 // buttonEl.addEventListener('click', function () {
