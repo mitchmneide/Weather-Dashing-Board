@@ -101,17 +101,22 @@ var fiveDay = function (weather) {
 
 }
 // creates the previous cities searched tho can't figure out why it doesn't load the data from it
-var search = function (data) {
+var search = function () {
     var city = document.createElement("button");
     city.classList.add("btn")
     city.innerText = localStorage.getItem('city');
+
     cityStored.appendChild(city)
-    city.addEventListener("click", function() {
-        storage(data)
-weatherGet(data);
+    city.addEventListener("click", function(event) {
+        var citySearch = event.target.getAttribute("city", inputValue.value)
+        
+        console.log(citySearch)
+weatherGet(event);
     }) 
+    $("#savedCity").val(localStorage.getItem("city"))
 }
 var storage = function (){
+
     localStorage.setItem("city", inputValue.value);
 }
 buttonEl.addEventListener("click", function () {
