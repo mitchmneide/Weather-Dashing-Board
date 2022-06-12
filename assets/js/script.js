@@ -1,5 +1,5 @@
 var buttonEl = document.querySelector(".btn")
-var inputValue = document.querySelector(".input")
+var inputValue = document.querySelector(".form-control")
 var cityName = document.querySelector('.cityName');
 var weatherHumid = document.querySelector('.humidity');
 var tempValue = document.querySelector(".temp")
@@ -10,16 +10,8 @@ var fiveDayForecast = document.querySelector("#fiveday-forcast");
 var fiveDayTitle = document.querySelector(".five")
 var fiveContainer = document.querySelector("#fiveday-container")
 
-buttonEl.addEventListener("click", function () {
-    localStorage.setItem("city", inputValue.value);
 
-    var city = document.createElement("button");
-    city.classList.add("btn")
-    city.innerText = localStorage.getItem('city');
-    cityStored.appendChild(city)
-    weatherGet();
 
-})
 var weatherGet = function () {
     fetch("https://api.openweathermap.org/data/2.5/weather?q=" + inputValue.value + "&appid=154a57fedfa17fef2e0e01f2b48a62b1&units=imperial")
         .then(response => response.json())
@@ -37,7 +29,9 @@ var weatherGet = function () {
             windValue.innerHTML = "Wind Speed: " + wind + "MPH";
             var lat = data.coord.lat;
             var lon = data.coord.lon;
+            fiveContainer.textContent ="";
             uvIndex(lat, lon);
+            storage(data)
         })
 }
 var uvIndex = function (lat, lon) {
@@ -70,7 +64,7 @@ var displayUv = function (index) {
 }
 var fiveDay = function (weather) {
     console.log(weather)
-
+    
 
     fiveDayTitle.innerHTML = "Five Day Forecast"
     var forecast = weather.daily;
@@ -102,18 +96,27 @@ var fiveDay = function (weather) {
         
     
 // append to fiveday container 
-        fiveContainer.appendChild(forecastEl)
-       
+        fiveContainer.appendChild(forecastEl)  
     }
-}
-// buttonEl.addEventListener('click', function () {
 
-//     fetch("https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&appid=154a57fedfa17fef2e0e01f2b48a62b1")
-//         .then(response => response.json())
-//         .then(data => console.log(data))
-// })
-// fetch("http://api.openweathermap.org/geo/1.0/direct?q=" + inputValue.value + "&appid=154a57fedfa17fef2e0e01f2b48a62b1")
-// .then(response => response.json())
-// .then(data => {
-//     var lat = data.coord.lat
-//     var lon = data.coord.lon
+}
+// creates the previous cities searched tho can't figure out why it doesn't load the data from it
+var search = function (data) {
+    var city = document.createElement("button");
+    city.classList.add("btn")
+    city.innerText = localStorage.getItem('city');
+    cityStored.appendChild(city)
+    city.addEventListener("click", function() {
+        storage(data)
+weatherGet(data);
+    }) 
+}
+var storage = function (){
+    localStorage.setItem("city", inputValue.value);
+}
+buttonEl.addEventListener("click", function () {
+    storage()
+    weatherGet();
+    search()
+   
+})
